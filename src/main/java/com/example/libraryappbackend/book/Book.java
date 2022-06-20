@@ -1,17 +1,18 @@
 package com.example.libraryappbackend.book;
 
-import com.example.libraryappbackend.user.User;
+import com.example.libraryappbackend.user.Users;
 import lombok.Getter;
-import org.springframework.lang.Nullable;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Setter
 public class Book {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -27,6 +28,5 @@ public class Book {
     private BookStatus status = BookStatus.AVAILABLE;
 
     @OneToOne
-    @Column
-    private User currentlyWith;
+    private Users currentlyWith;
 }
