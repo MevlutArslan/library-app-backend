@@ -1,6 +1,7 @@
 package com.example.libraryappbackend.book;
 
 import com.example.libraryappbackend.author.Author;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -15,6 +16,11 @@ class BookRepositoryTest {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @AfterEach
+    void tearDown(){
+        bookRepository.deleteAll();
+    }
 
     @Test
     void shouldFindBooksByAuthor() {
