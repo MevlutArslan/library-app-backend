@@ -18,7 +18,7 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public List<Book> getAllBooks(){
+    public List<Book> getListOfBooks(){
         return this.bookRepository.findAll();
     }
 
@@ -26,11 +26,11 @@ public class BookService {
         return this.bookRepository.findById(id);
     }
 
-    public List<Book> getBooksByAuthor(String author){
+    public List<Book> getListOfBooksByAuthor(String author){
         return this.bookRepository.findByAuthor(author);
     }
 
-    public List<Book> getBooksByTitle(String title){
+    public List<Book> getListOfBooksByTitle(String title){
         return this.bookRepository.findByTitle(title);
     }
 
@@ -68,5 +68,15 @@ public class BookService {
         });
     }
 
+    public void addNewBook(Book book){
+        this.bookRepository.save(book);
+    }
+
+    public void deleteBook(Long id){
+        Optional<Book> toDelete = this.bookRepository.findById(id);
+        toDelete.ifPresent((book)-> {
+            this.bookRepository.delete(book);
+        });
+    }
 
 }
