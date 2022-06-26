@@ -1,11 +1,13 @@
 package com.example.libraryappbackend.book;
 
+import com.example.libraryappbackend.exceptions.BookIsAlreadyInDatabaseException;
 import com.example.libraryappbackend.exceptions.BookNotAvailableException;
 import com.example.libraryappbackend.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -14,67 +16,60 @@ public class BookService {
     private BookRepository bookRepository;
 
     @Autowired
-    public BookService(BookRepository bookRepository){
+    public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
-    public List<Book> getListOfBooks(){
+    public List<Book> getListOfBooks() {
         return this.bookRepository.findAll();
     }
 
-    public Optional<Book> getBookById(Long id){
+    public Optional<Book> getBookById(Long id) {
         return this.bookRepository.findById(id);
     }
 
-    public List<Book> getListOfBooksByAuthor(String author){
-        return this.bookRepository.findByAuthor(author);
-    }
-
-    public List<Book> getListOfBooksByTitle(String title){
+    public List<Book> getListOfBooksByTitle(String title) {
         return this.bookRepository.findByTitle(title);
     }
 
-    public void updateTitleOfBook(Long id, String title){
-        Optional<Book> toUpdate = this.bookRepository.findById(id);
-        toUpdate.ifPresent(book -> book.setTitle(title));
+    public void updateTitleOfBook(Long id, String title) {
+        Book toUpdate = this.bookRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        toUpdate.setTitle(title);
     }
 
-    public void rentBook(Long id, Users user){
-        Optional<Book> toRent = this.bookRepository.findById(id);
+    public void rentBook(Long id, Users user) throws BookNotAvailableException {
+        Book book = this.bookRepository.findById(id).orElseThrow(NoSuchElementException::new);
 
-        toRent.ifPresent((book)->{
-            if(book.getStatus().equals(BookStatus.AVAILABLE)){
-                user.getBooksUnderPossession().add(book);
-                book.setCurrentlyWith(user);
-                book.setStatus(BookStatus.OCCUPIED);
-            }else{
-                // TODO :Don't really remember how to use custom exceptions... Will need to look here again
-                try {
-                    throw new BookNotAvailableException(book);
-                } catch (BookNotAvailableException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        // TODO :Don't really remember how to use custom exceptions... Will need to look here again
+        if (book.getStatus().equals(BookStatus.AVAILABLE)) {
+            user.getBooksUnderPossession().add(book);
+            book.setCurrentlyWith(user);
+            book.setStatus(BookStatus.OCCUPIED);
+        } else
+            throw new BookNotAvailableException(book);
+
     }
 
-    public void returnBook(Long id){
-        Optional<Book> toReturn = this.bookRepository.findById(id);
+    // TODO : Rewrite this method its very stupid and ugly
+    public void returnBook(Long id) throws BookIsAlreadyInDatabaseException {
+        Book book = this.bookRepository.findById(id).orElseThrow(NoSuchElementException::new);
 
-        toReturn.ifPresent((book)-> {
+        if (book.getCurrentlyWith() == null) {
+            throw new BookIsAlreadyInDatabaseException(book);
+        } else {
             book.getCurrentlyWith().getBooksUnderPossession().remove(book);
             book.setCurrentlyWith(null);
             book.setStatus(BookStatus.AVAILABLE);
-        });
+        }
     }
 
-    public void addNewBook(Book book){
+    public void addNewBook(Book book) {
         this.bookRepository.save(book);
     }
 
-    public void deleteBook(Long id){
+    public void deleteBook(Long id) {
         Optional<Book> toDelete = this.bookRepository.findById(id);
-        toDelete.ifPresent((book)-> {
+        toDelete.ifPresent((book) -> {
             this.bookRepository.delete(book);
         });
     }
