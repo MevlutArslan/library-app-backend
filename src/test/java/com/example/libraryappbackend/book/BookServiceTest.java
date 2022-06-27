@@ -43,11 +43,11 @@ class BookServiceTest {
 
     @Test
     void canGetBookById() {
-        Long bookId = 1L;
+        Book book = new Book("Percy jackson", new Author("John", "Doe"), "January 1");
+        when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
+        bookService.getBookById(book.getId());
 
-        bookService.getBookById(bookId);
-
-        verify(bookRepository).findById(bookId);
+        verify(bookRepository).findById(book.getId());
     }
 
     @Test
@@ -148,5 +148,10 @@ class BookServiceTest {
 
         bookService.deleteBook(book.getId());
         verify(bookRepository).delete(book);
+    }
+
+    @Test
+    void shouldNotDeleteBook() {
+        // TODO
     }
 }

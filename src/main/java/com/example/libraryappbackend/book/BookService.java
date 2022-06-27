@@ -24,19 +24,22 @@ public class BookService {
         return this.bookRepository.findAll();
     }
 
-    public Optional<Book> getBookById(Long id) {
-        return this.bookRepository.findById(id);
+    public Book getBookById(Long id) {
+        return this.bookRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
+    // TODO : Can handle this on the front-end not sure if I should do it here
     public List<Book> getListOfBooksByTitle(String title) {
         return this.bookRepository.findByTitle(title);
     }
 
+    // TODO : Change this to UPDATE book instead of property by property, manageing it in the frontend would be simpler
     public void updateTitleOfBook(Long id, String title) {
         Book toUpdate = this.bookRepository.findById(id).orElseThrow(NoSuchElementException::new);
         toUpdate.setTitle(title);
     }
 
+    // TODO : Refactor according to -> https://stackoverflow.com/questions/58340656/using-multiple-services-or-multiple-repositories-within-service
     public void rentBook(Long id, Users user) throws BookNotAvailableException {
         Book book = this.bookRepository.findById(id).orElseThrow(NoSuchElementException::new);
 
@@ -47,7 +50,6 @@ public class BookService {
             book.setStatus(BookStatus.OCCUPIED);
         } else
             throw new BookNotAvailableException(book);
-
     }
 
     // TODO : Rewrite this method its very stupid and ugly
