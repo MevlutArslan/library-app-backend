@@ -2,10 +2,12 @@ package com.example.libraryappbackend.book;
 
 import com.example.libraryappbackend.author.Author;
 import com.example.libraryappbackend.user.Users;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
+import java.sql.Date;
 
 @Entity
 @Getter
@@ -25,17 +27,20 @@ public class Book {
 
     // TODO change to proper format
     @Column(nullable = false)
-    private String publishedDate;
+    private Date publishedDate;
 
     @Column(nullable = false)
     private BookStatus status = BookStatus.AVAILABLE;
 
-    @OneToOne
-    private Users currentlyWith = null;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference("books_under_possession")
+    private Users isWith;
 
-    public Book(String title, Author author, String publishedDate){
+
+    public Book(String title, Author author, Date publishedDate) {
         this.title = title;
         this.author = author;
         this.publishedDate = publishedDate;
     }
+
 }
