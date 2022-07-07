@@ -35,7 +35,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public void updateBook(@PathVariable String id,@RequestBody Book book){
+    public void updateBook(@PathVariable String id, @RequestBody Book book){
         this.bookService.updateBook(Long.parseLong(id), book);
     }
 

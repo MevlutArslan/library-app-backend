@@ -45,16 +45,18 @@ public class BookService {
         toUpdate.setIsWith(book.getIsWith());
     }
 
+    @Transactional
     public void addNewBook(Book book) {
         // TODO implement logic to make sure we don't have duplicates in the db
+        book.getAuthor().getBooksWritten().add(book);
         this.bookRepository.save(book);
     }
 
     public void deleteBook(Long id) {
-        Optional<Book> toDelete = this.bookRepository.findById(id);
-        toDelete.ifPresent((book) -> {
-            this.bookRepository.delete(book);
-        });
+        Book book = this.bookRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        book.getAuthor().getBooksWritten().remove(book);
+        this.bookRepository.delete(book);
     }
+
 
 }

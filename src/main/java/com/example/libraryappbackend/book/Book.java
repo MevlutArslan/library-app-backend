@@ -3,9 +3,9 @@ package com.example.libraryappbackend.book;
 import com.example.libraryappbackend.author.Author;
 import com.example.libraryappbackend.user.Users;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.*;
 import java.sql.Date;
 
@@ -22,7 +22,7 @@ public class Book {
     @Column(nullable = false)
     private String title;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Author author;
 
     // TODO change to proper format
@@ -36,11 +36,9 @@ public class Book {
     @JsonBackReference("books_under_possession")
     private Users isWith;
 
-
     public Book(String title, Author author, Date publishedDate) {
         this.title = title;
         this.author = author;
         this.publishedDate = publishedDate;
     }
-
 }
