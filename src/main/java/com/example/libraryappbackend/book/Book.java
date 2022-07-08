@@ -3,8 +3,6 @@ package com.example.libraryappbackend.book;
 import com.example.libraryappbackend.author.Author;
 import com.example.libraryappbackend.user.Users;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import javax.persistence.*;
 import java.sql.Date;
@@ -22,7 +20,8 @@ public class Book {
     @Column(nullable = false)
     private String title;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "author_id")
     private Author author;
 
     // TODO change to proper format
@@ -41,4 +40,5 @@ public class Book {
         this.author = author;
         this.publishedDate = publishedDate;
     }
+
 }
