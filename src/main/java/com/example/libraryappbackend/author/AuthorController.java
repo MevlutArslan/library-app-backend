@@ -9,7 +9,7 @@ import java.util.List;
 import static com.example.libraryappbackend.utility.Constants.ROOT_API_ROUTE;
 
 @RestController
-@RequestMapping(ROOT_API_ROUTE + "/author")
+@RequestMapping(ROOT_API_ROUTE + "/authors")
 public class AuthorController {
 
     private AuthorService authorService;

@@ -10,7 +10,7 @@ import java.util.List;
 import static com.example.libraryappbackend.utility.Constants.ROOT_API_ROUTE;
 
 @RestController
-@RequestMapping(ROOT_API_ROUTE + "/user")
+@RequestMapping(ROOT_API_ROUTE + "/users")
 public class UsersController {
 
     private UsersService usersService;

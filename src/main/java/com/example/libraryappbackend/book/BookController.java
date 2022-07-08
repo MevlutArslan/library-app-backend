@@ -1,6 +1,5 @@
 package com.example.libraryappbackend.book;
 
-import com.example.libraryappbackend.exceptions.BookIsAlreadyInDatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,7 +8,7 @@ import java.util.List;
 import static com.example.libraryappbackend.utility.Constants.ROOT_API_ROUTE;
 
 @RestController
-@RequestMapping(ROOT_API_ROUTE + "/book")
+@RequestMapping(ROOT_API_ROUTE + "/books")
 public class BookController {
 
     private BookService bookService;
@@ -43,6 +42,5 @@ public class BookController {
     public void deleteBook(@PathVariable String id){
         this.bookService.deleteBook(Long.parseLong(id));
     }
-
 
 }
