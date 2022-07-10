@@ -1,10 +1,12 @@
 package com.example.libraryappbackend.author;
 
 import com.example.libraryappbackend.book.Book;
+import com.example.libraryappbackend.exceptions.AlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.example.libraryappbackend.utility.Constants.ROOT_API_ROUTE;
 
@@ -30,8 +32,13 @@ public class AuthorController {
     }
 
     @GetMapping("/{id}/books")
-    public List<Book> getBooksWrittenByAuthor(@PathVariable String id){
+    public Set<Book> getBooksWrittenByAuthor(@PathVariable String id){
         return this.authorService.getBooksWrittenByAuthorWithId(Long.parseLong(id));
+    }
+
+    @PostMapping
+    public void createAuthor(@RequestBody Author author) throws AlreadyExistsException {
+        this.authorService.createAuthor(author);
     }
 
     @PutMapping("/{id}")
@@ -43,4 +50,21 @@ public class AuthorController {
     public void deleteAuthor(@PathVariable String id){
         this.authorService.deleteAuthor(Long.parseLong(id));
     }
+
+    @PostMapping("/{id}/registerBookToAuthor/{bookID}")
+    public void registerBookToAuthor(@PathVariable String id, @PathVariable String bookID){
+        this.authorService.registerBookToAuthor(
+                Long.parseLong(id),
+                Long.parseLong(bookID)
+        );
+    }
+
+    @PostMapping("/{id}/removeBookFromAuthor/{bookID}")
+    public void removeBookFromAuthor(@PathVariable String id, @PathVariable String bookID){
+        this.authorService.removeBookFromAuthor(
+                Long.parseLong(id),
+                Long.parseLong(bookID)
+        );
+    }
+
 }

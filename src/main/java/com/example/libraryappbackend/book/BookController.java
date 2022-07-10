@@ -1,5 +1,6 @@
 package com.example.libraryappbackend.book;
 
+import com.example.libraryappbackend.exceptions.AlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,11 @@ public class BookController {
 
     @PostMapping()
     public void addBook(@RequestBody Book book){
-        this.bookService.addNewBook(book);
+        try{
+            this.bookService.addNewBook(book);
+        }catch (AlreadyExistsException existsException){
+//            return Response
+        }
     }
 
     @PutMapping("/{id}")
