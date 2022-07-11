@@ -62,7 +62,7 @@ public class AuthorService {
     @Transactional
     public void registerBookToAuthor(Long authorID, Long bookID){
         Author author = this.authorRepository.findById(authorID).orElseThrow(NoSuchElementException::new);
-        Book book = this.bookRepository.findById(bookID).orElseThrow(VMCannotBeModifiedException::new);
+        Book book = this.bookRepository.findById(bookID).orElseThrow(NoSuchElementException::new);
 
         author.registerBook(book);
     }
@@ -70,7 +70,7 @@ public class AuthorService {
     @Transactional
     public void removeBookFromAuthor(Long authorID, Long bookID){
         Author author = this.authorRepository.findById(authorID).orElseThrow(NoSuchElementException::new);
-        Book book = this.bookRepository.findById(bookID).orElseThrow(VMCannotBeModifiedException::new);
+        Book book = this.bookRepository.findById(bookID).orElseThrow(NoSuchElementException::new);
 
         author.unregisterBook(book);
     }

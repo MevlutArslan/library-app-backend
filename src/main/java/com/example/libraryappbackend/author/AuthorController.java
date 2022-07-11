@@ -3,6 +3,7 @@ package com.example.libraryappbackend.author;
 import com.example.libraryappbackend.book.Book;
 import com.example.libraryappbackend.exceptions.AlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,11 +38,13 @@ public class AuthorController {
     }
 
     @PostMapping
+    @ResponseStatus(value = HttpStatus.CREATED) // HTTP 201
     public void createAuthor(@RequestBody Author author) throws AlreadyExistsException {
         this.authorService.createAuthor(author);
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT) // HTTP 204
     public void updateAuthorInformation(@PathVariable String id, @RequestBody Author author){
         this.authorService.updateAuthorInformation(Long.parseLong(id), author);
     }

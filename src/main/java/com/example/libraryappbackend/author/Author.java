@@ -42,13 +42,13 @@ public class Author {
     }
 
     public void registerBook(Book book){
-        this.booksWritten.add(book);
         book.getAuthors().add(this);
+        this.booksWritten.add(book);
     }
 
     public void unregisterBook(Book book){
-        this.booksWritten.remove(book);
         book.getAuthors().remove(this);
+        this.booksWritten.remove(book);
     }
 
     @Override
@@ -56,11 +56,19 @@ public class Author {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Author author = (Author) o;
-        return id.equals(author.id) && name.equals(author.name) && surname.equals(author.surname) && booksWritten.equals(author.booksWritten);
+        return name.equals(author.name) && surname.equals(author.surname) && booksWritten.equals(author.booksWritten);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, name, surname);
+    }
+
+    @Override
+    public String toString() {
+        return "Author{" +
+                "name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                '}';
     }
 }

@@ -7,9 +7,5 @@ import java.util.List;
 
 public interface AuthorRepository extends JpaRepository<Author, Long> {
 
-    // TODO
-//    @Query()
-//    Author findAuthorByBookTitle(String title);
-
     Author findAuthorByName(String name);
 }
