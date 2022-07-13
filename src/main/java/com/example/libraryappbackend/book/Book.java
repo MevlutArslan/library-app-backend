@@ -5,6 +5,8 @@ import com.example.libraryappbackend.user.Users;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.sql.Date;
 import java.util.HashSet;
 import java.util.Objects;
@@ -15,18 +17,27 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 public class Book {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    /*
+    As a rule of thumb, we should prefer the @NotNull annotation over the @Column(nullable = false) annotation.
+    This way, we make sure the validation takes place before Hibernate sends any insert or update SQL queries to the database.
+
+    Also, it's usually better to rely on the standard rules defined in the Bean Validation,
+    rather than letting the database handle the validation logic.
+     */
+    @Column
+    @NotBlank(message = "title cannot be empty!")
     private String title;
 
-    // TODO change to proper format
-    @Column(nullable = false)
+    @Column
+    @NotNull(message = "published date cannot be empty!")
     private Date publishedDate;
 
-    @Column(nullable = false)
+    @Column
     private BookStatus status = BookStatus.AVAILABLE;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

@@ -6,8 +6,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,20 +24,26 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
+    @NotBlank(message = "User's name cannot be left blank!")
     private String name;
 
-    @Column(nullable = false)
+    @Column
+    @NotBlank(message = "User's surname cannot be left blank!")
     private String surname;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
+    @NotBlank(message = "National Identification Number cannot be left blank!")
+    @Length(min = 9, max = 9, message = "A national identification number should be of length 9!") // "A valid National Identification number consists of one letter and nine-digits" - Wikipedia
     private String nationalIdentificationNumber;
 
-    @Column(nullable = false)
+    @Column
     @JsonFormat(pattern="yyyy-mm-dd")
+    @NotNull(message = "Birthday cannot be null!")
     private Date birthday;
 
-    @Column
+    @Column(unique = true)
+    @Length(min = 9, message = "Your phone number should consist of atleast 9 digits")
     private String phoneNumber;
 
     @OneToMany(mappedBy = "isWith")

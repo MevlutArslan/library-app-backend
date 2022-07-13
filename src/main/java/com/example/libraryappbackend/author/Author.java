@@ -9,20 +9,21 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.*;
 
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
 public class Author {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
+    @NotBlank(message = "Author's name cannot be left blank!")
     private String name;
 
     @Column
