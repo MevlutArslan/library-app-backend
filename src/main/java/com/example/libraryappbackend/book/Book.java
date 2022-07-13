@@ -49,11 +49,22 @@ public class Book {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return id.equals(book.id) && title.equals(book.title) && publishedDate.equals(book.publishedDate) && status == book.status && authors.equals(book.authors) && Objects.equals(isWith, book.isWith);
+        return title.equals(book.title) && publishedDate.equals(book.publishedDate) && status == book.status && authors.equals(book.authors) && Objects.equals(isWith, book.isWith);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, title, publishedDate, status, authors, isWith);
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "title='" + title + '\'' +
+                ", publishedDate=" + publishedDate +
+                ", status=" + status +
+                ", authors=" + authors +
+                ", isWith=" + isWith +
+                '}';
     }
 }
