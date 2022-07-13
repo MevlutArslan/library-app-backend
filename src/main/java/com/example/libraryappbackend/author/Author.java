@@ -2,13 +2,12 @@ package com.example.libraryappbackend.author;
 
 import com.example.libraryappbackend.book.Book;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.*;
 
@@ -28,6 +27,10 @@ public class Author {
 
     @Column
     private String surname;
+
+    @Column
+    @Email
+    private String email;
 
     @ManyToMany(mappedBy = "authors")
     @JsonIgnore
@@ -57,12 +60,13 @@ public class Author {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Author author = (Author) o;
-        return name.equals(author.name) && surname.equals(author.surname) && booksWritten.equals(author.booksWritten);
+        return name.equals(author.name) && surname.equals(author.surname) && booksWritten.equals(author.booksWritten)
+                && email.equals(author.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, surname);
+        return Objects.hash(id, name, surname, email);
     }
 
     @Override
