@@ -1,10 +1,6 @@
 package com.example.libraryappbackend.book;
 
-import com.example.libraryappbackend.author.Author;
-import com.example.libraryappbackend.exceptions.BookDoesntExistException;
-import com.example.libraryappbackend.exceptions.BookIsAlreadyInDatabaseException;
-import com.example.libraryappbackend.exceptions.BookNotAvailableException;
-import com.example.libraryappbackend.user.Users;
+import com.example.libraryappbackend.exceptions.AlreadyExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,9 +8,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.sql.Date;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -34,7 +31,7 @@ class BookServiceTest {
     }
 
     @Test
-    void canGetListOfAllBooks() {
+    void shouldGetListOfAllBooks() {
 
         bookService.getListOfBooks();
 
@@ -42,102 +39,33 @@ class BookServiceTest {
     }
 
     @Test
-    void canGetBookById() {
-        Book book = new Book("Percy jackson", new Author("John", "Doe"), "January 1");
+    void shouldGetBookById() {
+        Book book = new Book("Percy jackson", new Date(2020, 1, 11));
         when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
         bookService.getBookById(book.getId());
 
         verify(bookRepository).findById(book.getId());
     }
 
-    @Test
-    void canGetListOfBooksByTitle() {
-        String title = "Fault";
-
-        bookService.getListOfBooksByTitle(title);
-
-        verify(bookRepository).findByTitle(title);
-    }
 
     @Test
-    void hasUpdatedTitleOfBook() throws BookDoesntExistException {
-        Book book = new Book("Percy jackson", new Author("John", "Doe"), "January 1");
-
-        when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
-        bookService.updateTitleOfBook(book.getId(), "Maze Runner");
-
-        assertEquals("Maze Runner", book.getTitle());
-    }
-
-    @Test
-    void shouldRentBook() throws BookNotAvailableException {
-        // set up
-        Book book = new Book("Percy jackson", new Author("John", "Doe"), "January 1");
-        Users user = new Users("Mevlut", "Arslan", "123456");
-        when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
-
-        bookService.rentBook(book.getId(), user);
-
-        assertTrue(user.getBooksUnderPossession().contains(book));
-        assertEquals(user, book.getCurrentlyWith());
-        assertEquals(BookStatus.OCCUPIED, book.getStatus());
-    }
-
-    @Test
-    void shouldNotRentBook() {
-        Book book = new Book("Percy jackson", new Author("John", "Doe"), "January 1");
-        Users user = new Users("Mevlut", "Arslan", "123456");
-        when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
-
-        book.setStatus(BookStatus.OCCUPIED);
-
-        Exception exception = assertThrows(BookNotAvailableException.class, () -> {
-            bookService.rentBook(book.getId(), user);
-        });
-
-        String expectedMessage = book.getTitle();
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
-    }
-
-    @Test
-    void shouldReturnBook() throws BookIsAlreadyInDatabaseException {
-        Book book = new Book("Percy jackson", new Author("John", "Doe"), "January 1");
-        Users user = new Users("Mevlut", "Arslan", "123456");
-        book.setCurrentlyWith(user);
-
-        when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
-
-        bookService.returnBook(book.getId());
-
-        assertFalse(user.getBooksUnderPossession().contains(book));
-        assertNull(book.getCurrentlyWith());
-        assertEquals(BookStatus.AVAILABLE, book.getStatus());
-    }
-
-    @Test
-    void shouldNotReturnBookWhenBookIsAlreadyReturned() throws BookIsAlreadyInDatabaseException {
-        Book book = new Book("Percy jackson", new Author("John", "Doe"), "January 1");
-
-        when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
-
-        Exception exception = assertThrows(BookIsAlreadyInDatabaseException.class, () -> {
-            bookService.returnBook(book.getId());
-        });
-
-        String expectedMessage = book.getTitle();
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
-    }
-
-    @Test
-    void shouldAddNewBook() {
+    void shouldAddNewBook() throws AlreadyExistsException {
         Book book = new Book();
 
         bookService.addNewBook(book);
         verify(bookRepository).save(book);
+    }
+
+    @Test
+    void shouldUpdateBook(){
+        Book book = new Book("Percy jackson", new Date(2020, 1, 11));
+
+        when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
+        Book newBook = new Book("Percy Jackson : The lightning thief", book.getPublishedDate());
+
+        this.bookService.updateBook(book.getId(), newBook);
+
+        assertEquals(newBook, book);
     }
 
 
@@ -148,10 +76,5 @@ class BookServiceTest {
 
         bookService.deleteBook(book.getId());
         verify(bookRepository).delete(book);
-    }
-
-    @Test
-    void shouldNotDeleteBook() {
-        // TODO
     }
 }

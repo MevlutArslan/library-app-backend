@@ -38,12 +38,6 @@ public class BookService {
 
     @Transactional
     public void addNewBook(Book book) throws AlreadyExistsException {
-        List<Book> booksWithTitle = bookRepository.findByTitle(book.getTitle());
-
-        if(booksWithTitle.contains(book)){
-            throw new AlreadyExistsException(book);
-        }
-
         this.bookRepository.save(book);
     }
 
@@ -54,6 +48,4 @@ public class BookService {
         });
         this.bookRepository.delete(book);
     }
-
-
 }

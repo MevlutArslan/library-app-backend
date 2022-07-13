@@ -1,6 +1,7 @@
 package com.example.libraryappbackend.user;
 
 import com.example.libraryappbackend.book.Book;
+import com.example.libraryappbackend.book.BookStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
@@ -26,35 +27,36 @@ public class Users {
     @Column(nullable = false)
     private String surname;
 
+    @Column(nullable = false, unique = true)
+    private String nationalIdentificationNumber;
+
     @Column(nullable = false)
     @JsonFormat(pattern="yyyy-mm-dd")
     private Date birthday;
 
-    @Column(nullable = false)
-    private String nationalIdentificationNumber;
+    @Column
+    private String phoneNumber;
 
-    @OneToMany()
-    @JoinColumn(name = "book_id")
+    @OneToMany(mappedBy = "isWith")
     @JsonManagedReference("books_under_possession")
     private List<Book> booksUnderPossession = new ArrayList<>();
 
-    @Column()
-    private String phoneNumber;
-
-    public Users(String name, String surname, String nationalIdentificationNumber){
+    public Users(String name, String surname, String nationalIdentificationNumber, Date birthday){
         this.name = name;
         this.surname = surname;
         this.nationalIdentificationNumber = nationalIdentificationNumber;
+        this.birthday = birthday;
     }
 
     public void registerBook(Book book){
         booksUnderPossession.add(book);
         book.setIsWith(this);
+        book.setStatus(BookStatus.OCCUPIED);
     }
 
     public void returnBook(Book book){
         booksUnderPossession.remove(book);
         book.setIsWith(null);
+        book.setStatus(BookStatus.AVAILABLE);
     }
-
 }
