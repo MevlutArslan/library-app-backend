@@ -114,7 +114,7 @@ class BookControllerIntegrationTest {
     }
 
     @Test
-    void addBook() throws Exception {
+    void shouldAddBook() throws Exception {
         // given
         Book book = new Book(
                 "Percy Jackson",
@@ -130,7 +130,7 @@ class BookControllerIntegrationTest {
     }
 
     @Test
-    void updateBook() throws Exception {
+    void shouldUpdateBook() throws Exception {
         Book book = new Book(
                 "Percy Jackson",
                 new Date(1995, JULY, 12)
@@ -154,7 +154,7 @@ class BookControllerIntegrationTest {
     }
 
     @Test
-    void deleteBook() throws Exception{
+    void shouldDeleteBook() throws Exception{
         Book book = new Book(
                 "Percy Jackson",
                 new Date(1995, JULY, 12)
