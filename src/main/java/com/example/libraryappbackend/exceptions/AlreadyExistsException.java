@@ -5,6 +5,4 @@ public class AlreadyExistsException extends RuntimeException{
     public <T>AlreadyExistsException(T object){
         super(object + " , already exists!");
     }
-
-
 }
