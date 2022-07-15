@@ -41,10 +41,10 @@ class BookControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private BookRepository bookRepository;
+    private ObjectMapper objectMapper;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private BookRepository bookRepository;
 
     private final String API_ROUTE = ROOT_API_ROUTE + "/books";
 

@@ -2,7 +2,9 @@ package com.example.libraryappbackend.user;
 
 import com.example.libraryappbackend.book.Book;
 import com.example.libraryappbackend.book.BookRepository;
+import com.example.libraryappbackend.book.BookStatus;
 import com.example.libraryappbackend.exceptions.AlreadyExistsException;
+import com.example.libraryappbackend.exceptions.BookNotAvailableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +69,9 @@ public class UsersService {
         Users user = this.usersRepository.findById(Long.parseLong(userID))
                 .orElseThrow(NoSuchElementException::new);
         Book book = bookRepository.findById(Long.parseLong(bookID)).orElseThrow(NoSuchElementException::new);
+        if(book.getStatus().equals(BookStatus.OCCUPIED)){
+            throw new BookNotAvailableException(book.getId());
+        }
         user.registerBook(book);
     }
 
