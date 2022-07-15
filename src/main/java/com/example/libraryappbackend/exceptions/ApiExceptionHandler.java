@@ -62,6 +62,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return buildErrorResponse(e,"Failed to find the requested element", HttpStatus.NOT_FOUND, request);
     }
 
+    @ExceptionHandler(value = BookNotAvailableException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public ResponseEntity<Object> handleBookNotAvailableException(BookNotAvailableException e, WebRequest request){
+
+        return buildErrorResponse(e,e.getMessage(), HttpStatus.NOT_ACCEPTABLE, request);
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<Object> handleAllUncaughtException(Exception exception, WebRequest request) {
