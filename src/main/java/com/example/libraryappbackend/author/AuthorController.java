@@ -44,7 +44,6 @@ public class AuthorController {
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT) // HTTP 204
     public void updateAuthorInformation(@PathVariable String id, @RequestBody Author author){
         this.authorService.updateAuthorInformation(Long.parseLong(id), author);
     }

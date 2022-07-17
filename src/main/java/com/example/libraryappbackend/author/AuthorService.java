@@ -3,7 +3,6 @@ package com.example.libraryappbackend.author;
 import com.example.libraryappbackend.book.Book;
 import com.example.libraryappbackend.book.BookRepository;
 import com.example.libraryappbackend.exceptions.AlreadyExistsException;
-import com.sun.jdi.VMCannotBeModifiedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +25,13 @@ public class AuthorService {
 
     public void createAuthor(Author author) throws AlreadyExistsException {
         Author authorByName = this.authorRepository.findAuthorByName(author.getName());
+        Author authorByEmail = null;
 
-        if(authorByName != null){
+        if(author.getEmail() != null){
+            authorByEmail = this.authorRepository.findAuthorByEmail(author.getEmail());
+        }
+
+        if(authorByName != null || authorByEmail != null){
             throw new AlreadyExistsException(author);
         }
 
@@ -52,6 +56,10 @@ public class AuthorService {
 
         author.setName(updatedAuthor.getName());
         author.setSurname(updatedAuthor.getSurname());
+
+        if(updatedAuthor.getEmail() != null){
+            author.setEmail(updatedAuthor.getEmail());
+        }
     }
 
     public void deleteAuthor(Long id){

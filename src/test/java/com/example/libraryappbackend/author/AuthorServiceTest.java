@@ -39,12 +39,14 @@ class AuthorServiceTest {
 
     @Test
     void shouldGetListOfAuthors() {
+        authorService.getListOfAuthors();
         verify(authorRepository).findAll();
     }
 
     @Test
     void shouldCreateAuthor(){
         Author author = new Author("Morgan", "Freeman");
+        authorService.createAuthor(author);
 
         verify(authorRepository).save(author);
     }
@@ -62,16 +64,18 @@ class AuthorServiceTest {
             authorService.createAuthor(duplicateAuthor);
         });
 
-        String expectedMessage = duplicateAuthor.getName();
         String actualMessage = exception.getMessage();
 
-        assertTrue(actualMessage.contains(expectedMessage));
+        assertEquals("Object with same field exists in the database!", actualMessage);
     }
 
 
     @Test
     void shouldGetAuthorById() {
         Author author = new Author("Morgan", "Freeman");
+
+        when(authorRepository.findById(author.getId())).thenReturn(Optional.of(author));
+        authorService.getAuthorById(author.getId());
 
         verify(authorRepository).findById(author.getId());
     }
@@ -105,6 +109,8 @@ class AuthorServiceTest {
     @Test
     void shouldDeleteAuthor() {
         Author author = new Author("Morgan", "Freeman");
+
+        when(authorRepository.findById(author.getId())).thenReturn(Optional.of(author));
 
         authorService.deleteAuthor(author.getId());
 
